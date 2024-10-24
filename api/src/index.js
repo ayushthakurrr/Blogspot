@@ -57,7 +57,7 @@ app.post('/login', async (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Failed to create token' });
       }
-      res.cookie('token', token, { httpOnly: true }).json({
+      res.cookie('token', token, { httpOnly: true, sameSite: 'None', secure: true }).json({
         id: userDoc._id,
         username,
       });
