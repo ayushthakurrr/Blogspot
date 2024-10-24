@@ -86,7 +86,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
-  const newPath = `${path}.${ext}`;
+  const newPath = `${__dirname}/uploads/${path}.${ext}`; 
 
   try {
     await fs.promises.rename(path, newPath)
