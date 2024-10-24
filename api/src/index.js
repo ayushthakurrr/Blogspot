@@ -86,7 +86,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
-  const newPath = `${__dirname}/uploads/${path}.${ext}`; 
+  const newPath = path+'.'+ext;
 
   try {
     await fs.promises.rename(path, newPath)
@@ -116,8 +116,8 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     const { originalname, path } = req.file;
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
-    newPath = `${path}.${ext}`;
-    await fs.promises.rename(path, newPath);  // Use async rename
+    const newPath = path+'.'+ext;
+    await fs.promises.rename(path, newPath);  
   }
 
   const { token } = req.cookies;
