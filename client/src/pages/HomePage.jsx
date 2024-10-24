@@ -4,7 +4,7 @@ import Post from "../components/Post"
 function HomePage() {
   const [posts, setPosts] = useState([]);
   useEffect(()=>{
-    fetch('https://blogspot-backend-45r6.onrender.com/post').then(response => {
+    fetch('https://blogspot-backend-3de9.onrender.com/post').then(response => {
       response.json().then(posts => {
         setPosts(posts)
       })
