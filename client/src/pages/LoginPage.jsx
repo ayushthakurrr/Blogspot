@@ -12,7 +12,7 @@ export default function LoginPage() {
   const failed = () => toast.error("Login failed");
   async function login(ev) {
     ev.preventDefault();
-    const response = await fetch('https://blogspot-backend-45r6.onrender.com/login', {
+    const response = await fetch('https://blogspot-backend-3de9.onrender.com/login', {
       method: 'POST',
       body: JSON.stringify({username, password}),
       headers: {'Content-Type':'application/json'},
