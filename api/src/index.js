@@ -4,22 +4,22 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const Post = require('./models/post');
 const bcrypt = require('bcryptjs');
+const port = process.env.PORT || 4000;
 const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const fs = require('fs');
 const uploadMiddleware = multer({ dest: 'uploads/' });
-
 const salt = bcrypt.genSaltSync(10);
 const secret = 'Secret'
 
+mongoose.connect('mongodb+srv://admin:SkX9hAtLeFoHrIeT@cluster0.rvlwldp.mongodb.net/Blogspot')
 app.use(cors({ credentials: true, origin: 'http://localhost:5174' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-mongoose.connect('mongodb+srv://admin:SkX9hAtLeFoHrIeT@cluster0.rvlwldp.mongodb.net/Blogspot')
 
 app.post('/register', async (req, res) => {
   const { username, password,email } = req.body;
@@ -166,4 +166,4 @@ app.get('/post/:id', async (req, res) => {
   }
 });
 
-app.listen(4000, () => console.log('Server is running on port 4000'));
+app.listen(port, () => console.log('Server is running on port ${port}'));
