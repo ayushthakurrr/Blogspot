@@ -5,7 +5,7 @@ import {UserContext} from "../UserContext";
 export default function Header() {
   const {setUserInfo,userInfo} = useContext(UserContext);
   useEffect(() => {
-    fetch('https://blogspot-backend-45r6.onrender.com/profile', {
+    fetch('https://blogspot-backend-3de9.onrender.com/profile', {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -15,7 +15,7 @@ export default function Header() {
   }, []);
 
   function logout() {
-    fetch('http://localhost:4000/logout', {
+    fetch('https://blogspot-backend-3de9.onrender.com/logout', {
       credentials: 'include',
       method: 'POST',
     });
