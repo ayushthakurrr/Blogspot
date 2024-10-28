@@ -20,7 +20,7 @@ export default function Header() {
       method: 'POST',
     });
     setUserInfo(null);
-    return <Navigate to={'/'} />
+    window.location.reload(true);
   }
 
   const username = userInfo?.username;

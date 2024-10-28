@@ -36,9 +36,10 @@ export default function EditPost() {
       body: data,
       credentials: 'include',
     });
-    if (response.ok) {
-      setRedirect(true);
+    if (!response.ok) {
+      <Navigate to={'/'}/>
     }
+    setRedirect(true)
   }
 
   if (redirect) {

@@ -14,8 +14,9 @@ const uploadMiddleware = multer({ dest: 'uploads/' });
 const salt = bcrypt.genSaltSync(10);
 const secret = 'Secret'
 
+
 mongoose.connect('mongodb+srv://admin:SkX9hAtLeFoHrIeT@cluster0.rvlwldp.mongodb.net/Blogspot')
-app.use(cors({ credentials: true, origin: 'http://localhost:5174' }));
+app.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -57,7 +58,7 @@ app.post('/login', async (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Failed to create token' });
       }
-      res.cookie('token', token, { httpOnly: true }).json({
+      res.cookie('token', token, { httpOnly: true, sameSite: 'None', secure: true }).json({
         id: userDoc._id,
         username,
       });
@@ -82,64 +83,59 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  const { originalname, path } = req.file;
+app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
+  const {originalname,path} = req.file;
+  console.log(path);
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
-  const newPath = `${path}.${ext}`;
+  const newPath = path+'.'+ext;
+  fs.renameSync(path, newPath);
 
-  try {
-    await fs.promises.rename(path, newPath)
-
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-      if (err) return res.status(403).json('Invalid token');
-      const { title, summary, content } = req.body;
-      const postDoc = await Post.create({
-        title,
-        summary,
-        content,
-        cover: newPath,
-        author: info.id,
-      });
-      res.json(postDoc);
+  const {token} = req.cookies;
+  jwt.verify(token, secret, {}, async (err,info) => {
+    if (err) throw err;
+    const {title,summary,content} = req.body;
+    const postDoc = await Post.create({
+      title,
+      summary,
+      content,
+      cover:newPath,
+      author:info.id,
     });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ message: 'Error saving post' });
-  }
+    res.json(postDoc);
+  });
+
 });
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
   let newPath = null;
   if (req.file) {
-    const { originalname, path } = req.file;
+    const {originalname,path} = req.file;
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
-    newPath = `${path}.${ext}`;
-    await fs.promises.rename(path, newPath);  // Use async rename
+    newPath = path+'.'+ext;
+    fs.renameSync(path, newPath);
   }
 
-  const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) return res.status(403).json('Invalid token');
-    const { id, title, summary, content } = req.body;
+  const {token} = req.cookies;
+  jwt.verify(token, secret, {}, async (err,info) => {
+    if (err) throw err;
+    const {id,title,summary,content} = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-
     if (!isAuthor) {
-      return res.status(400).json('You are not the author');
+      return res.status(400).json('you are not the author');
     }
-
     await postDoc.updateOne({
       title,
       summary,
       content,
-      cover: newPath || postDoc.cover,
+      cover: newPath ? newPath : postDoc.cover,
     });
 
     res.json(postDoc);
   });
+
 });
 
 app.get('/post', async (req, res) => {
