@@ -15,8 +15,8 @@ function HomePage() {
   },[]) 
 
   if(loading){
-    return <div className="loader">
-    </div>
+    return <span className="loader">
+    </span>
   }
 
   return (
