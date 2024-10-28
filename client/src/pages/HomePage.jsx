@@ -3,13 +3,22 @@ import Post from "../components/Post"
 
 function HomePage() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(()=>{
-    fetch('https://blogspot-ahqd.onrender.com/post').then(response => {
-      response.json().then(posts => {
-        setPosts(posts)
-      })
-    })
-  },[])
+    const fetchData = async()=>{
+      const response = await fetch('https://blogspot-ahqd.onrender.com/post')
+      const posts  = await response.json()
+      setPosts(posts)
+      setLoading(false)
+    }
+    fetchData();
+  },[]) 
+
+  if(loading){
+    return <div>
+      Loading...
+    </div>
+  }
 
   return (
     <>
