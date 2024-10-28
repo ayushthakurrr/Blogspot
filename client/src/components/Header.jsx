@@ -5,51 +5,23 @@ import {UserContext} from "../UserContext";
 export default function Header() {
   const {setUserInfo,userInfo} = useContext(UserContext);
   useEffect(() => {
-    if (userInfo) { // Only fetch if userInfo is available
-      fetch('https://blogspot-ahqd.onrender.com/profile', {
-        credentials: 'include',
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setUserInfo(null); // Clear userInfo if not authenticated
-          throw new Error('Failed to fetch user profile');
-        }
-      })
-      .then(userInfo => {
+    fetch('https://blogspot-ahqd.onrender.com/profile', {
+      credentials: 'include',
+    }).then(response => {
+      response.json().then(userInfo => {
         setUserInfo(userInfo);
-      })
-      .catch(error => {
-        console.error('Error fetching profile:', error);
-        setUserInfo(null); // Clear user info on error
       });
-    }
-  }, [userInfo, setUserInfo]); // Runs when userInfo changes
-  
-  console.log('Cookies after logout:', document.cookie);
+    });
+  }, []);
 
   function logout() {
     fetch('https://blogspot-ahqd.onrender.com/logout', {
       credentials: 'include',
       method: 'POST',
-    })
-    .then(response => {
-      if (response.ok) {
-        // Clear user info only after confirming logout success
-        setUserInfo(null); 
-        localStorage.removeItem('token'); // Remove specific item from local storage
-        sessionStorage.clear(); // Clear all session storage
-        window.location.reload(true); // Reload page
-      } else {
-        console.error('Logout failed:', response.statusText);
-      }
-    })
-    .catch(error => {
-      console.error('Error during logout:', error);
     });
+    setUserInfo(null);
+    window.location.reload(true);
   }
-  
 
   const username = userInfo?.username;
 
