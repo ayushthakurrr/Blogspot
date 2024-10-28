@@ -14,14 +14,16 @@ export default function Header() {
     });
   }, []);
 
-  function logout() {
-    // Send logout request to the backend
+  function logout(event) {
+    event.preventDefault(); // Prevent the default anchor click behavior
+  
     fetch('https://blogspot-ahqd.onrender.com/logout', {
-      credentials: 'include',
+      credentials: 'include', // Include cookies in the request
       method: 'POST',
-    }).then((response) => {
+    })
+    .then((response) => {
       if (response.ok) {
-        // Clear cookies manually in case the server doesn't handle it
+        // Clear cookies in the browser
         document.cookie.split(";").forEach(cookie => {
           const cookieName = cookie.split("=")[0].trim();
           // Expire the cookie by setting the date to the past
@@ -31,15 +33,20 @@ export default function Header() {
         // Clear user info from the context
         setUserInfo(null);
   
-        // Force reload the page
-        window.location.reload(true);
+        // Optionally redirect the user to a different page or show a message
+        // e.g., history.push('/login');
+  
+        // Force reload the page to reflect the logged-out state
+        window.location.reload();
       } else {
-        console.error('Logout failed:', response);
+        console.error('Logout failed:', response.statusText);
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error('Error during logout:', error);
     });
   }
+  
   
   
 
