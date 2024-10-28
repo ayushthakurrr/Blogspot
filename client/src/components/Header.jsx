@@ -5,49 +5,50 @@ import {UserContext} from "../UserContext";
 export default function Header() {
   const {setUserInfo,userInfo} = useContext(UserContext);
   useEffect(() => {
-    fetch('https://blogspot-ahqd.onrender.com/profile', {
-      credentials: 'include',
-    }).then(response => {
-      response.json().then(userInfo => {
+    if (userInfo) { // Only fetch if userInfo is available
+      fetch('https://blogspot-ahqd.onrender.com/profile', {
+        credentials: 'include',
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          setUserInfo(null); // Clear userInfo if not authenticated
+          throw new Error('Failed to fetch user profile');
+        }
+      })
+      .then(userInfo => {
         setUserInfo(userInfo);
+      })
+      .catch(error => {
+        console.error('Error fetching profile:', error);
+        setUserInfo(null); // Clear user info on error
       });
-    });
-  }, []);
-
-  function logout(event) {
-    event.preventDefault(); // Prevent the default anchor click behavior
+    }
+  }, [userInfo, setUserInfo]); // Runs when userInfo changes
   
+  console.log('Cookies after logout:', document.cookie);
+
+  function logout() {
     fetch('https://blogspot-ahqd.onrender.com/logout', {
-      credentials: 'include', // Include cookies in the request
+      credentials: 'include',
       method: 'POST',
     })
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
-        // Clear cookies in the browser
-        document.cookie.split(";").forEach(cookie => {
-          const cookieName = cookie.split("=")[0].trim();
-          // Expire the cookie by setting the date to the past
-          document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        });
-  
-        // Clear user info from the context
-        setUserInfo(null);
-  
-        // Optionally redirect the user to a different page or show a message
-        // e.g., history.push('/login');
-  
-        // Force reload the page to reflect the logged-out state
-        window.location.reload();
+        // Clear user info only after confirming logout success
+        setUserInfo(null); 
+        localStorage.removeItem('token'); // Remove specific item from local storage
+        sessionStorage.clear(); // Clear all session storage
+        window.location.reload(true); // Reload page
       } else {
         console.error('Logout failed:', response.statusText);
       }
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('Error during logout:', error);
     });
   }
-  
-  
   
 
   const username = userInfo?.username;
