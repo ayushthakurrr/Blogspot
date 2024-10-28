@@ -53,7 +53,7 @@ BlogSpot is a full-stack blogging website built using the MERN stack (MongoDB, E
 ```bash
 # Run the server
 cd api
-node index.js
+npm run start
 
 # Run the React client
 cd client
