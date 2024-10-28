@@ -19,15 +19,28 @@ export default function Header() {
     fetch('https://blogspot-ahqd.onrender.com/logout', {
       credentials: 'include',
       method: 'POST',
-    }).then(() => {
-      document.cookie.split(";").forEach(cookie => {
-        const cookieName = cookie.split("=")[0].trim();
-        document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-      });
-      setUserInfo(null);
-      window.location.reload(true);
+    }).then((response) => {
+      if (response.ok) {
+        // Clear cookies manually in case the server doesn't handle it
+        document.cookie.split(";").forEach(cookie => {
+          const cookieName = cookie.split("=")[0].trim();
+          // Expire the cookie by setting the date to the past
+          document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        });
+  
+        // Clear user info from the context
+        setUserInfo(null);
+  
+        // Force reload the page
+        window.location.reload(true);
+      } else {
+        console.error('Logout failed:', response);
+      }
+    }).catch((error) => {
+      console.error('Error during logout:', error);
     });
   }
+  
   
 
   const username = userInfo?.username;
