@@ -15,13 +15,20 @@ export default function Header() {
   }, []);
 
   function logout() {
+    // Send logout request to the backend
     fetch('https://blogspot-ahqd.onrender.com/logout', {
       credentials: 'include',
       method: 'POST',
+    }).then(() => {
+      document.cookie.split(";").forEach(cookie => {
+        const cookieName = cookie.split("=")[0].trim();
+        document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+      });
+      setUserInfo(null);
+      window.location.reload(true);
     });
-    setUserInfo(null);
-    window.location.reload(true);
   }
+  
 
   const username = userInfo?.username;
 
