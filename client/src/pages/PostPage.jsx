@@ -22,11 +22,8 @@ export default function PostPage() {
   if(loading){
     return <div className="loader-parent">
       <div className="loader-container">
-      <span className="loader">
-      </span>
-      <div>
-        Server is setting up 
-      </div>
+        <span className="loader">
+        </span>
       </div>
     </div>
   }
