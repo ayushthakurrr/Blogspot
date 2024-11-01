@@ -18,7 +18,7 @@ const secret = 'Secret'
 mongoose.connect('mongodb+srv://admin:SkX9hAtLeFoHrIeT@cluster0.rvlwldp.mongodb.net/Blogspot')
 app.use(cors({
    credentials: true,
-   origin: 'http://localhost:5173'
+   origin: 'https://blogspot-1-o3za.onrender.com'
  }));
 app.use(express.json());
 app.use(cookieParser());
