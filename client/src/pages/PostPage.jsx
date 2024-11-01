@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 
 export default function PostPage() {
   const [postInfo,setPostInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const {userInfo} = useContext(UserContext);
   const {id} = useParams();
   useEffect(() => {
@@ -13,9 +14,22 @@ export default function PostPage() {
       .then(response => {
         response.json().then(postInfo => {
           setPostInfo(postInfo);
+          setLoading(false)
         });
       });
   }, []);
+
+  if(loading){
+    return <div className="loader-parent">
+      <div className="loader-container">
+      <span className="loader">
+      </span>
+      <div>
+        Server is setting up 
+      </div>
+      </div>
+    </div>
+  }
 
   if (!postInfo) return '';
 

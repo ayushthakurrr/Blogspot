@@ -14,9 +14,17 @@ function HomePage() {
     fetchData();
   },[]) 
 
+
   if(loading){
-    return <span className="loader">
-    </span>
+    return <div className="loader-parent">
+      <div className="loader-container">
+      <span className="loader">
+      </span>
+      <div>
+        Server is setting up 
+      </div>
+      </div>
+    </div>
   }
 
   return (
