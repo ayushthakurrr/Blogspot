@@ -21,7 +21,7 @@ function HomePage() {
       <span className="loader">
       </span>
       <div>
-        Server is setting up 
+        Fetching data 
       </div>
       </div>
     </div>
